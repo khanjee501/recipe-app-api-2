@@ -1,0 +1,24 @@
+# Use Docker Compose version 3.9
+version: "3.9"
+
+services:
+  # Define a service named 'app' — this will be our Django application container
+  app:
+    # Build the Docker image using the Dockerfile located in our current directory (.)
+    build:
+      context: .
+
+    # Map port 8000 on our host machine to port 8000 inside the container
+    # So we can access the Django development server at http://localhost:8000
+    ports:
+      - "8000:8000"
+
+    # Mount our local ./app directory into the container’s /app directory
+    # This way, changes we make in our code reflect instantly inside the container — perfect for development
+    volumes:
+      - ./app:/app
+
+    # Set the container command to run the Django development server
+    # '0.0.0.0' tells it to listen on all interfaces, which is required inside Docker
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
