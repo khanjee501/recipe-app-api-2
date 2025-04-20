@@ -7,8 +7,9 @@ LABEL maintainer="khanjee501"
 # Ensures that Python output is sent straight to the terminal (helpful for logging in Docker)
 ENV PYTHONUNBUFFERED 1
 
-# Copy the requirements.txt file into the temporary directory in the image
+# Copy the requirements.txt and requirements.dev.txt file into the temporary directory in the image
 COPY ./requirements.txt /tmp/requirements.txt
+COPY ./requirements.dev.txt /tmp/requirements.dev.txt
 
 # Copy the Django application code from the host into the /app directory in the image
 COPY ./app /app
@@ -24,9 +25,13 @@ EXPOSE 8000
 # install Python dependencies from requirements.txt,
 # then clean up the temp files,
 # and finally create a new system user called django-user without a home directory or password
+ARG DEV=false
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     /py/bin/pip install -r /tmp/requirements.txt && \
+    if [ $DEV = 'true' ]; \
+        then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
+    fi && \
     rm -rf /tmp && \
     adduser \
         --disabled-password \

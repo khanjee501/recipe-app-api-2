@@ -7,6 +7,9 @@ services:
     # Build the Docker image using the Dockerfile located in our current directory (.)
     build:
       context: .
+      # args used to run requirements.dev.txt in local. Will be overridden in Dockerfile
+      args:
+        - DEV=true
 
     # Map port 8000 on our host machine to port 8000 inside the container
     # So we can access the Django development server at http://localhost:8000
